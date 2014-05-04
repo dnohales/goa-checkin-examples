@@ -10,7 +10,7 @@ if (ARGV.length != 3) {
 
 let manager = new CheckIn.CheckInManager();
 manager.getFacebookPlacesAsync(ARGV[0], ARGV[1], ARGV[2], function(authorizer, data, error) {
-    if (error != "null") {
+    if (error == null) {
         print("Places:");
         for (let i in data.data) {
             let place = data.data[i];
