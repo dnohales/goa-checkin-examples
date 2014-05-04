@@ -1,9 +1,15 @@
 const GLib = imports.gi.GLib;
 const Format = imports.format;
 const CheckIn = imports.checkIn;
+const System = imports.system;
+
+if (ARGV.length != 3) {
+    printerr("Usage: gjs listFacebookPlaces.js <latitude> <longitude> <distance>");
+    System.exit(1);
+}
 
 let manager = new CheckIn.CheckInManager();
-manager.getFacebookPlacesAsync("-38.011448", "-57.539910", "500", function(authorizer, data, error) {
+manager.getFacebookPlacesAsync(ARGV[0], ARGV[1], ARGV[2], function(authorizer, data, error) {
     if (error != "null") {
         print("Places:");
         for (let i in data.data) {
