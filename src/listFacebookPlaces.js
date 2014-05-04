@@ -14,7 +14,7 @@ manager.getFacebookPlacesAsync(ARGV[0], ARGV[1], ARGV[2], function(authorizer, d
         print("Places:");
         for (let i in data.data) {
             let place = data.data[i];
-            print(Format.vprintf("  %s: %s (%s)", [place.id, place.name, place.category]));
+            print(Format.vprintf("  %d: %s: %s (%s)", [i, place.id, place.name, place.category]));
         }
     } else {
         log(error);
