@@ -41,6 +41,10 @@ const CheckInManager = new Lang.Class({
         this.emit("accounts-refreshed");
     },
 
+    getFacebookAuthorizers: function() {
+        return this._facebookAuthorizers;
+    },
+
     facebookCallAsync: function(authorizer, method, func, params, callback, mustRefreshToken) {
         mustRefreshToken = mustRefreshToken || true;
 
@@ -78,19 +82,19 @@ const CheckInManager = new Lang.Class({
         }));
     },
 
-    performCheckInAsync: function(checkIn, callback) {
+    performCheckInAsync: function(authorizer, checkIn, callback) {
         callback = callback || function() {};
 
-        this._facebookAuthorizers.forEach(Lang.bind(this, function(authorizer) {
-            //TODO
-            this.facebookCallAsync(
-                authorizer,
-                "GET",
-                "me",
-                {},
-                callback
-            );
-        }));
+        this.facebookCallAsync(
+            authorizer,
+            "POST",
+            "me/feed",
+            {
+                "message": checkIn.message,
+                "place": checkIn.facebookPlaceId
+            },
+            callback
+        );
     },
 
     getFacebookPlacesAsync: function(latitude, longitude, distance, callback) {
