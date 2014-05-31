@@ -155,7 +155,7 @@ const SocialPlaceListModel = new Lang.Class({
     _setValues: function(place, iter) {
         let markup = '<b>%s</b>\n<small>%s</small>'.format(
             place.name,
-            place.name
+            place.category
         );
 
         //TODO: not needed, Gjs object GType in list model
