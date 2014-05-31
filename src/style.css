@@ -1,0 +1,8 @@
+.maps-check-in .view {
+    -GtkTreeView-vertical-separator: 20;
+    -GtkTreeView-horizontal-separator: 20;
+}
+
+.maps-check-in GtkTextView {
+    font-size: 1.2em;
+}
