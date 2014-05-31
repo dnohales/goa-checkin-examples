@@ -112,4 +112,10 @@ const CheckIn = new Lang.Class({
     message: null,
 
     place: null,
+
+    privacy: null,
+
+    broadcastFacebook: false,
+
+    broadcastTwitter: false
 });

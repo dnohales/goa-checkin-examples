@@ -43,7 +43,8 @@ const FacebookBackend = new Lang.Class({
             "me/feed",
             {
                 "message": checkIn.message,
-                "place": checkIn.place.id
+                "place": checkIn.place.id,
+                "privacy_value": checkIn.privacy
             },
             callback,
             cancellable

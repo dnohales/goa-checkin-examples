@@ -31,13 +31,24 @@ const FoursquareBackend = new Lang.Class({
     },
 
     internalPerformCheckInAsync: function(authorizer, checkIn, callback, cancellable) {
+        let broadcast = checkIn.privacy;
+
+        if (checkIn.broadcastFacebook) {
+            broadcast += ",facebook";
+        }
+
+        if (checkIn.broadcastTwitter) {
+            broadcast += ",twitter";
+        }
+
         this.callAsync(
             authorizer,
             "POST",
             "checkins/add",
             {
                 "shout": checkIn.message,
-                "venueId": checkIn.place.id
+                "venueId": checkIn.place.id,
+                "broadcast": broadcast
             },
             callback,
             cancellable
