@@ -385,6 +385,8 @@ const CheckInDialog = new Lang.Class({
         this._placeNotFoundLabel = this._ui.get_object("label-place-not-found");
         this._messageInfoLabel = this._ui.get_object("label-message-info");
         this._messageTextView = this._ui.get_object("textview-message");
+
+        this._messageTextView.buffer.connect("changed", this._refreshDoneButtonSensitivity.bind(this));
     },
 
     _initAccountsTreeView: function() {
@@ -496,6 +498,12 @@ const CheckInDialog = new Lang.Class({
         }
     },
 
+    _refreshDoneButtonSensitivity: function() {
+        let message = this._messageTextView.buffer.text;
+        message = message.trim();
+        this._doneButton.sensitive = message.length > 0;        
+    },
+
     setAccount: function(account) {
         this._account = account;
         this._authorizer = CheckInManager.getAuthorizerForAccount(account);
@@ -543,6 +551,7 @@ const CheckInDialog = new Lang.Class({
     startMessageStep: function() {
         this.set_title("Put a message");
         this._stack.set_visible_child_name("message");
+
         this._messageInfoLabel.label = 
             _("You are going to check-in in %s with your %s account. Put a message for the check-in below")
             .format("<a href=\"%s\">%s</a>".format(this._checkIn.place.link,
@@ -551,10 +560,63 @@ const CheckInDialog = new Lang.Class({
 
         this._messageTextView.grab_focus();
         this._doneButton.show();
+
+        let optionsBoxes = {
+            "facebook": this._ui.get_object("box-options-facebook"),
+            "foursquare": this._ui.get_object("box-options-foursquare")
+        };
+
+        for (let provider in optionsBoxes) {
+            if (provider == this._account.get_account().provider_type) {
+                optionsBoxes[provider].show();
+            } else {
+                optionsBoxes[provider].hide();
+            }
+        }
+
+        this._refreshDoneButtonSensitivity();
     },
 
     startCheckInStep: function() {
-        //TODO
+        this.set_title("Loading");
+        this._stack.set_visible_child_name("loading");
+        
+        this._doneButton.sensitive = false;
+
+        let message = this._messageTextView.buffer.text;
+        let privacy = this._ui.get_object("combobox-privacy-" + this._account.get_account().provider_type).active_id;
+        let broadcastFacebook = this._ui.get_object("checkbutton-broadcast-facebook").active;
+        let broadcastTwitter = this._ui.get_object("checkbutton-broadcast-twitter").active;
+
+        this._checkIn.message = message;
+        this._checkIn.privacy = privacy;
+        this._checkIn.broadcastFacebook = broadcastFacebook;
+        this._checkIn.broadcastTwitter = broadcastTwitter;
+
+        CheckInManager.performCheckInAsync(
+            this._authorizer,
+            this._checkIn,
+            (function (authorizer, data, error) {
+                if (error == null) {
+                    this.emit("response", CheckInDialogResponse.SUCCESS);
+                } else {
+                    let messageDialog = new Gtk.MessageDialog({
+                        transient_for: this,
+                        destroy_with_parent: true,
+                        message_type: Gtk.MessageType.ERROR,
+                        buttons: Gtk.ButtonsType.OK,
+                        modal: true,
+                        text: _("An error has ocurred during the check-in"),
+                        secondary_text: error.message
+                    });
+                    messageDialog.run();
+                    messageDialog.destroy();
+
+                    this.startMessageStep();
+                }
+            }).bind(this),
+            this._cancellable
+        );
     }
 
 });
