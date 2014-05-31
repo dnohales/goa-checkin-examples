@@ -13,7 +13,7 @@ const CheckInManager = new Lang.Class({
 
     _init: function(params) {
         this._goaClient = Goa.Client.new_sync(null);
-        this._accounts = {};
+        this._accounts = [];
         this._authorizers = {};
         this._backends = {};
 
@@ -40,7 +40,8 @@ const CheckInManager = new Lang.Class({
 
     _refreshGoaAccounts: function() {
         let accounts = this._goaClient.get_accounts();
-        this._accounts = {};
+        this._accounts = [];
+        this._accountsCount = 0;
         this._authorizers = {};
 
         accounts.forEach(Lang.bind(this, function(object) {
@@ -51,7 +52,7 @@ const CheckInManager = new Lang.Class({
                 return;
 
             let accountId = object.get_account().id;
-            this._accounts[accountId] = object;
+            this._accounts.push(object);
 
             if (object.get_account().provider_type == "facebook") {
                 this._authorizers[accountId] = new GFBGraph.GoaAuthorizer({ goa_object: object });
@@ -65,8 +66,16 @@ const CheckInManager = new Lang.Class({
         this.emit("accounts-refreshed");
     },
 
+    getClient: function() {
+        return this._goaClient;
+    },
+
     getAccounts: function() {
         return this._accounts;
+    },
+
+    isCheckInAvailable: function() {
+        return this._accounts.length > 0;
     },
 
     getAuthorizers: function() {

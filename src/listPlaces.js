@@ -21,7 +21,7 @@ manager.getPlacesAsync(authorizer, ARGV[1], ARGV[2], ARGV[3], function(authorize
         print("Places:");
         for (let i in places) {
             let place = places[i];
-            print(Format.vprintf("  %d: %s: %s (%s)", [i, place.getId(), place.getName(), place.getCategory()]));
+            print(Format.vprintf("  %d: %s: %s (%s)", [i, place.id, place.name, place.category]));
         }
     } else {
         log(error);

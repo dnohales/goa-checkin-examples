@@ -4,7 +4,7 @@ const Lang = imports.lang;
 const SocialService = imports.socialService;
 
 const FacebookBackend = new Lang.Class({
-    Name: "SocialService.FacebookBackend",
+    Name: "SocialServiceFacebookBackend",
     Extends: SocialService.serviceBackend.ServiceBackend,
 
     getName: function() {
@@ -21,15 +21,19 @@ const FacebookBackend = new Lang.Class({
     },
 
     isInvalidCall: function(restCall, data) {
-        return data.error;
+        return data == null || data.error;
     },
 
     getCallResultCode: function(restCall, data) {
-        return data.error? data.error.code:null;
+        return data == null?
+            restCall.get_status_code():
+            (data.error? data.error.code:null);
     },
 
     getCallResultMessage: function(restCall, data) {
-        return data.error? data.error.message:null;
+        return data == null?
+            restCall.get_status_message():
+            (data.error? data.error.message:null);
     },
 
     internalPerformCheckInAsync: function(authorizer, checkIn, callback, cancellable) {
@@ -39,7 +43,7 @@ const FacebookBackend = new Lang.Class({
             "me/feed",
             {
                 "message": checkIn.message,
-                "place": checkIn.place.getId()
+                "place": checkIn.place.id
             },
             callback,
             cancellable
@@ -66,11 +70,14 @@ const FacebookBackend = new Lang.Class({
 
         for (let i in rawData.data) {
             let place = rawData.data[i];
-            places.push(new SocialService.place.Place({
-                "id": place.id,
-                "name": place.name,
-                "category": place.category,
-                "originalData": place,
+            places.push(new SocialService.socialPlace.SocialPlace({
+                id: place.id,
+                name: place.name,
+                latitude: place.location.latitude,
+                longitude: place.location.longitude,
+                category: place.category,
+                link: "https://www.facebook.com/" + place.id,
+                originalData: place,
             }));
         }
 

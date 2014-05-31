@@ -3,7 +3,7 @@ const Lang = imports.lang;
 const SocialService = imports.socialService;
 
 const FoursquareBackend = new Lang.Class({
-    Name: "SocialService.FoursquareBackend",
+    Name: "SocialServiceFoursquareBackend",
     Extends: SocialService.serviceBackend.ServiceBackend,
 
     getName: function() {
@@ -19,15 +19,15 @@ const FoursquareBackend = new Lang.Class({
     },
 
     isInvalidCall: function(restCall, data) {
-        return data.meta.code != 200;
+        return data == null || data.meta.code != 200;
     },
 
     getCallResultCode: function(restCall, data) {
-        return data.meta.code;
+        return data == null? restCall.get_status_code():data.meta.code;
     },
 
     getCallResultMessage: function(restCall, data) {
-        return data.meta.errorDetail;
+        return data == null? restCall.get_status_message():data.meta.errorDetail;
     },
 
     internalPerformCheckInAsync: function(authorizer, checkIn, callback, cancellable) {
@@ -37,7 +37,7 @@ const FoursquareBackend = new Lang.Class({
             "checkins/add",
             {
                 "shout": checkIn.message,
-                "venueId": checkIn.place.getId()
+                "venueId": checkIn.place.id
             },
             callback,
             cancellable
@@ -51,7 +51,8 @@ const FoursquareBackend = new Lang.Class({
             "venues/search",
             {
                 "ll": latitude + "," + longitude,
-                "radius": distance
+                "radius": distance,
+                "intent": "checkin"
             },
             callback,
             cancellable
@@ -64,13 +65,16 @@ const FoursquareBackend = new Lang.Class({
         for (let i in rawData.response.venues) {
             let place = rawData.response.venues[i];
 
-            places.push(new SocialService.place.Place({
-                "id": place.id,
-                "name": place.name,
-                "category": place.categories.length > 0?
+            places.push(new SocialService.socialPlace.SocialPlace({
+                id: place.id,
+                name: place.name,
+                latitude: place.location.lat,
+                longitude: place.location.lng,
+                category: place.categories.length > 0?
                     place.categories[0].name:
                     null,
-                "originalData": place,
+                link: "https://foursquare.com/v/foursquare-hq/" + place.id,
+                originalData: place,
             }));
         }
 
