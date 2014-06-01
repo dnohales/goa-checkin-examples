@@ -3,11 +3,11 @@ const Lang = imports.lang;
 const SocialService = imports.socialService;
 
 const FoursquareBackend = new Lang.Class({
-    Name: "SocialServiceFoursquareBackend",
+    Name: 'SocialServiceFoursquareBackend',
     Extends: SocialService.serviceBackend.ServiceBackend,
 
     getName: function() {
-        return "foursquare";
+        return 'foursquare';
     },
 
     createRestCall: function(authorizer) {
@@ -34,21 +34,21 @@ const FoursquareBackend = new Lang.Class({
         let broadcast = checkIn.privacy;
 
         if (checkIn.broadcastFacebook) {
-            broadcast += ",facebook";
+            broadcast += ',facebook';
         }
 
         if (checkIn.broadcastTwitter) {
-            broadcast += ",twitter";
+            broadcast += ',twitter';
         }
 
         this.callAsync(
             authorizer,
-            "POST",
-            "checkins/add",
+            'POST',
+            'checkins/add',
             {
-                "shout": checkIn.message,
-                "venueId": checkIn.place.id,
-                "broadcast": broadcast
+                'shout': checkIn.message,
+                'venueId': checkIn.place.id,
+                'broadcast': broadcast
             },
             callback,
             cancellable
@@ -58,12 +58,12 @@ const FoursquareBackend = new Lang.Class({
     internalGetPlacesAsync: function(authorizer, latitude, longitude, distance, callback, cancellable) {
         this.callAsync(
             authorizer,
-            "GET",
-            "venues/search",
+            'GET',
+            'venues/search',
             {
-                "ll": latitude + "," + longitude,
-                "radius": distance,
-                "intent": "checkin"
+                'll': latitude + ',' + longitude,
+                'radius': distance,
+                'intent': 'checkin'
             },
             callback,
             cancellable
@@ -84,7 +84,7 @@ const FoursquareBackend = new Lang.Class({
                 category: place.categories.length > 0?
                     place.categories[0].name:
                     null,
-                link: "https://foursquare.com/v/foursquare-hq/" + place.id,
+                link: 'https://foursquare.com/v/foursquare-hq/' + place.id,
                 originalData: place,
             }));
         }

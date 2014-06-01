@@ -12,7 +12,7 @@ const FoursquareGoaAuthorizer = new Lang.Class({
 
     _init: function(params) {
         if (!params.goa_object) {
-            logError("FoursquareGoaAuthorizer requires goa_object parameter");
+            logError('FoursquareGoaAuthorizer requires goa_object parameter');
             return;
         }
 
@@ -40,8 +40,8 @@ const FoursquareGoaAuthorizer = new Lang.Class({
     process_call: function(restCall) {
         //this._mutex.lock();
 
-        restCall.add_param("oauth_token", this._accessToken);
-        restCall.add_param("v", "20140226");
+        restCall.add_param('oauth_token', this._accessToken);
+        restCall.add_param('v', '20140226');
 
         //this._mutex.unlock();
     },
@@ -50,7 +50,7 @@ const FoursquareGoaAuthorizer = new Lang.Class({
         //this._mutex.lock();
 
         let uri = soupMessage.get_uri();
-        uri.set_query(uri, "oauth_token" + this._accessToken + "&v=20140226");
+        uri.set_query(uri, 'oauth_token' + this._accessToken + '&v=20140226');
 
         //this._mutex.unlock();
     },
@@ -80,7 +80,7 @@ const FoursquareGoaAuthorizer = new Lang.Class({
 function new_rest_call(authorizer)
 {
     let proxy = new Rest.Proxy({
-        url_format: "https://api.foursquare.com/v2",
+        url_format: 'https://api.foursquare.com/v2',
         binding_required: false
     });
     let restCall = proxy.new_call();

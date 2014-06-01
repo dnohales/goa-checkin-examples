@@ -4,11 +4,11 @@ const Lang = imports.lang;
 const SocialService = imports.socialService;
 
 const FacebookBackend = new Lang.Class({
-    Name: "SocialServiceFacebookBackend",
+    Name: 'SocialServiceFacebookBackend',
     Extends: SocialService.serviceBackend.ServiceBackend,
 
     getName: function() {
-        return "facebook";
+        return 'facebook';
     },
 
     createRestCall: function(authorizer) {
@@ -39,12 +39,12 @@ const FacebookBackend = new Lang.Class({
     internalPerformCheckInAsync: function(authorizer, checkIn, callback, cancellable) {
         this.callAsync(
             authorizer,
-            "POST",
-            "me/feed",
+            'POST',
+            'me/feed',
             {
-                "message": checkIn.message,
-                "place": checkIn.place.id,
-                "privacy_value": checkIn.privacy
+                'message': checkIn.message,
+                'place': checkIn.place.id,
+                'privacy_value': checkIn.privacy
             },
             callback,
             cancellable
@@ -54,12 +54,12 @@ const FacebookBackend = new Lang.Class({
     internalGetPlacesAsync: function(authorizer, latitude, longitude, distance, callback, cancellable) {
         this.callAsync(
             authorizer,
-            "GET",
-            "search",
+            'GET',
+            'search',
             {
-                "type": "place",
-                "center": latitude + "," + longitude,
-                "distance": distance
+                'type': 'place',
+                'center': latitude + ',' + longitude,
+                'distance': distance
             },
             callback,
             cancellable
@@ -77,7 +77,7 @@ const FacebookBackend = new Lang.Class({
                 latitude: place.location.latitude,
                 longitude: place.location.longitude,
                 category: place.category,
-                link: "https://www.facebook.com/" + place.id,
+                link: 'https://www.facebook.com/' + place.id,
                 originalData: place,
             }));
         }

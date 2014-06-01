@@ -1,7 +1,7 @@
 const Lang = imports.lang;
 
 const ServiceBackend = new Lang.Class({
-    Name: "SocialServiceServiceBackend",
+    Name: 'SocialServiceServiceBackend',
     Abstract: true,
 
     _init: function(params) {
@@ -47,7 +47,7 @@ const ServiceBackend = new Lang.Class({
 
         restCall.set_function(func);
 
-        log("DEBUG: " + this.getName() + ": " + func);
+        log('DEBUG: ' + this.getName() + ': ' + func);
 
         restCall.invoke_async(cancellable, Lang.bind(this, function(call, result) {
             let data = JSON.parse(call.get_payload());
@@ -60,13 +60,13 @@ const ServiceBackend = new Lang.Class({
             } else if (this.isTokenInvalid(call, data)) {
                 if (mustRefreshToken) {
                     //Unauthorized token error, we need to refresh the token
-                    log("DEBUG: " + this.getName() + ": The token is not authorized, refreshing token");
+                    log('DEBUG: ' + this.getName() + ': The token is not authorized, refreshing token');
                     authorizer.refresh_authorization(cancellable);
                     this.callAsync(authorizer, method, func, params, callback, cancellable, false);
                 } else {
                     callback(authorizer, data, {
                         code: 401,
-                        message: "The access token is not authorized to perform the operation"
+                        message: 'The access token is not authorized to perform the operation'
                     });
                 }
             } else {

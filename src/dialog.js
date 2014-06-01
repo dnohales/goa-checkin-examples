@@ -32,7 +32,7 @@ const AccountListModelColumn = {
 };
 
 const AccountListModel = new Lang.Class({
-    Name: "AccountListModel",
+    Name: 'AccountListModel',
     Extends: Gtk.ListStore,
 
     _init: function(params) {
@@ -93,7 +93,7 @@ const SocialPlaceListModelColumn = {
 };
 
 const SocialPlaceListModel = new Lang.Class({
-    Name: "SocialPlaceListModel",
+    Name: 'SocialPlaceListModel',
     Extends: Gtk.ListStore,
 
     _init: function() {
@@ -103,7 +103,7 @@ const SocialPlaceListModel = new Lang.Class({
     },
 
     initView: function(treeview) {
-        treeview.connect("row-activated", (function(view, path, column, userData) {
+        treeview.connect('row-activated', (function(view, path, column, userData) {
             if (path != null) {
                 let iter = this.get_iter(path)[1];
                 if (this.get_value(iter, SocialPlaceListModelColumn.IS_SHOW_MORE_RESULTS)) {
@@ -174,7 +174,7 @@ const SocialPlaceListModel = new Lang.Class({
 
         let markup = '<span foreground="#777777">' + _('Show more results') + '</span>';
 
-        this.set_value(iter, SocialPlaceListModelColumn.OBJECT, "");
+        this.set_value(iter, SocialPlaceListModelColumn.OBJECT, '');
         this.set_value(iter, SocialPlaceListModelColumn.MARKUP, markup);
         this.set_value(iter, SocialPlaceListModelColumn.IS_SHOW_MORE_RESULTS, true);
     }
@@ -265,9 +265,9 @@ const SocialPlaceMatcher = {
         socialPlaces.forEach(function(p) {
             let cat = p.name;
             p._category = cat +
-                          " " +
+                          ' ' +
                           geoPlace.location.get_distance_from(p.location) + 
-                          " " +
+                          ' ' +
                           SocialPlaceMatcher.getLevenshteinDistance(geoPlace.name, p.name);
 
         });
@@ -317,7 +317,7 @@ const CheckInDialogResponse = {
 };
 
 const CheckInDialog = new Lang.Class({
-    Name: "CheckInDialog",
+    Name: 'CheckInDialog',
     Extends: Gtk.Dialog,
 
     _init: function(params) {
@@ -338,10 +338,10 @@ const CheckInDialog = new Lang.Class({
 
         this._cancellable = new Gio.Cancellable();
         this._cancellable.connect((function() {
-            this.emit("response", CheckInDialogResponse.CANCELLED);
+            this.emit('response', CheckInDialogResponse.CANCELLED);
         }).bind(this));
 
-        CheckInManager.connect("accounts-refreshed", this._onAccountRefreshed.bind(this));
+        CheckInManager.connect('accounts-refreshed', this._onAccountRefreshed.bind(this));
 
         this._initHeaderBar();
         this._initWidgets();
@@ -350,19 +350,19 @@ const CheckInDialog = new Lang.Class({
     _initHeaderBar: function() {
         this.get_header_bar().show_close_button = false;
 
-        let cancelButton = new Gtk.Button({ label: _("Cancel") });
+        let cancelButton = new Gtk.Button({ label: _('Cancel') });
         this.get_header_bar().pack_start(cancelButton, true, true, 0);
-        cancelButton.connect("clicked", (function() {
+        cancelButton.connect('clicked', (function() {
             this._cancellable.cancel();
         }).bind(this));
 
         this._doneButton = new Gtk.Button({
-            label: _("Done"),
+            label: _('Done'),
         });
         this._doneButton.get_style_context().add_class('suggested-action');
         this.get_header_bar().pack_end(this._doneButton, true, true, 0);
         this._doneButton.hide();
-        this._doneButton.connect("clicked", (function() {
+        this._doneButton.connect('clicked', (function() {
             this.startCheckInStep();
         }).bind(this));
     },
@@ -374,23 +374,23 @@ const CheckInDialog = new Lang.Class({
 
         this.get_content_area().pack_start(this._stack, true, true, 0);
 
-        this._stack.add_named(this._ui.get_object("box-account"), "account");
-        this._stack.add_named(this._ui.get_object("box-place"), "place");
-        this._stack.add_named(this._ui.get_object("box-loading"), "loading");
-        this._stack.add_named(this._ui.get_object("box-message"), "message");
+        this._stack.add_named(this._ui.get_object('box-account'), 'account');
+        this._stack.add_named(this._ui.get_object('box-place'), 'place');
+        this._stack.add_named(this._ui.get_object('box-loading'), 'loading');
+        this._stack.add_named(this._ui.get_object('box-message'), 'message');
 
         this._initAccountsTreeView();
         this._initPlacesTreeView();
 
-        this._placeNotFoundLabel = this._ui.get_object("label-place-not-found");
-        this._messageInfoLabel = this._ui.get_object("label-message-info");
-        this._messageTextView = this._ui.get_object("textview-message");
+        this._placeNotFoundLabel = this._ui.get_object('label-place-not-found');
+        this._messageInfoLabel = this._ui.get_object('label-message-info');
+        this._messageTextView = this._ui.get_object('textview-message');
 
-        this._messageTextView.buffer.connect("changed", this._refreshDoneButtonSensitivity.bind(this));
+        this._messageTextView.buffer.connect('changed', this._refreshDoneButtonSensitivity.bind(this));
     },
 
     _initAccountsTreeView: function() {
-        let accountsTreeView = this._ui.get_object("treeview-accounts");
+        let accountsTreeView = this._ui.get_object('treeview-accounts');
         accountsTreeView.set_model(new AccountListModel({
             client: CheckInManager.getClient()
         }));
@@ -402,21 +402,21 @@ const CheckInDialog = new Lang.Class({
         column.pack_start(renderer, false);
         renderer.follow_state = true;
         renderer.stock_size = Gtk.IconSize.DIALOG;
-        column.add_attribute(renderer, "gicon", AccountListModelColumn.ICON);
+        column.add_attribute(renderer, 'gicon', AccountListModelColumn.ICON);
 
         renderer = new Gtk.CellRendererText();
         column.pack_start(renderer, false);
         renderer.width_chars = 30;
-        column.add_attribute(renderer, "markup", AccountListModelColumn.MARKUP);
+        column.add_attribute(renderer, 'markup', AccountListModelColumn.MARKUP);
 
         renderer = new Gtk.CellRendererPixbuf();
         column.pack_start(renderer, false);
-        renderer.icon_name = "dialog-warning-symbolic";
+        renderer.icon_name = 'dialog-warning-symbolic';
         renderer.xalign = 1.0;
         renderer.xpad = 10;
-        column.add_attribute(renderer, "visible", AccountListModelColumn.ATTENTION_NEEDED);
+        column.add_attribute(renderer, 'visible', AccountListModelColumn.ATTENTION_NEEDED);
 
-        accountsTreeView.connect("row-activated", (function(view, path, column, userData) {
+        accountsTreeView.connect('row-activated', (function(view, path, column, userData) {
             if (path != null) {
                 this.setAccount(view.get_model().getAccountForPath(path));
                 this.startPlaceStep()
@@ -425,7 +425,7 @@ const CheckInDialog = new Lang.Class({
     },
 
     _initPlacesTreeView: function() {
-        this._placesTreeView = this._ui.get_object("treeview-places");
+        this._placesTreeView = this._ui.get_object('treeview-places');
         let model = new SocialPlaceListModel();
         this._placesTreeView.set_model(model);
         model.initView(this._placesTreeView);
@@ -436,9 +436,9 @@ const CheckInDialog = new Lang.Class({
         let renderer = new Gtk.CellRendererText();
         column.pack_start(renderer, false);
         renderer.width_chars = 30;
-        column.add_attribute(renderer, "markup", SocialPlaceListModelColumn.MARKUP);
+        column.add_attribute(renderer, 'markup', SocialPlaceListModelColumn.MARKUP);
 
-        this._placesTreeView.connect("row-activated", (function(view, path, column, userData) {
+        this._placesTreeView.connect('row-activated', (function(view, path, column, userData) {
             if (path != null) {
                 let place = view.get_model().getPlaceForPath(path);
                 if (place != null) {
@@ -466,7 +466,7 @@ const CheckInDialog = new Lang.Class({
 
     vfunc_show: function() {
         this.parent();
-        Utils.loadStyleSheet("style.css");
+        Utils.loadStyleSheet('style.css');
         this.show_all();
         this._doneButton.hide();
         this.startup();
@@ -485,7 +485,7 @@ const CheckInDialog = new Lang.Class({
         let accounts = CheckInManager.getAccounts();
 
         if (!CheckInManager.isCheckInAvailable()) {
-            this.emit("response", CheckInDialogResponse.FAILURE_CHECKIN_DISABLED);
+            this.emit('response', CheckInDialogResponse.FAILURE_CHECKIN_DISABLED);
         } else if (this._account != null) {
             for (let i in accounts) {
                 let account = accounts[i];
@@ -494,7 +494,7 @@ const CheckInDialog = new Lang.Class({
                 }
             }
 
-            this.emit("response", CheckInDialogResponse.FAILURE_ACCOUNT_DISABLED);
+            this.emit('response', CheckInDialogResponse.FAILURE_ACCOUNT_DISABLED);
         }
     },
 
@@ -510,13 +510,13 @@ const CheckInDialog = new Lang.Class({
     },
 
     startAccountStep: function() {
-        this.set_title("Select an account");
-        this._stack.set_visible_child_name("account");
+        this.set_title('Select an account');
+        this._stack.set_visible_child_name('account');
     },
 
     startPlaceStep: function() {
-        this.set_title("Loading");
-        this._stack.set_visible_child_name("loading");
+        this.set_title('Loading');
+        this._stack.set_visible_child_name('loading');
 
         CheckInManager.getPlacesAsync(
             this._authorizer,
@@ -533,15 +533,15 @@ const CheckInDialog = new Lang.Class({
                         this._checkIn.place = matches.exactMatches[0];
                         this.startMessageStep();
                     } else {
-                        this.set_title("Select a place");
+                        this.set_title('Select a place');
                         this._placesTreeView.get_model().setMatches(matches);
-                        this._placeNotFoundLabel.label = _("Maps could not find the place to check-in in %s, please select one from this list")
+                        this._placeNotFoundLabel.label = _('Maps could not find the place to check-in in %s, please select one from this list')
                                                         .format(this._account.get_account().provider_name);
-                        this._stack.set_visible_child_name("place");
+                        this._stack.set_visible_child_name('place');
                     }
                 } else {
                     printerr(JSON.stringify(error));
-                    this.emit("response", CheckInDialogResponse.FAILURE_GET_PLACES);
+                    this.emit('response', CheckInDialogResponse.FAILURE_GET_PLACES);
                 }
             }).bind(this),
             this._cancellable
@@ -549,12 +549,12 @@ const CheckInDialog = new Lang.Class({
     },
 
     startMessageStep: function() {
-        this.set_title("Put a message");
-        this._stack.set_visible_child_name("message");
+        this.set_title('Put a message');
+        this._stack.set_visible_child_name('message');
 
         this._messageInfoLabel.label = 
-            _("You are going to check-in in %s with your %s account. Put a message for the check-in below")
-            .format("<a href=\"%s\">%s</a>".format(this._checkIn.place.link,
+            _('You are going to check-in in %s with your %s account. Put a message for the check-in below')
+            .format('<a href="%s">%s</a>'.format(this._checkIn.place.link,
                                                   this._checkIn.place.name),
                     this._account.get_account().provider_name);
 
@@ -562,8 +562,8 @@ const CheckInDialog = new Lang.Class({
         this._doneButton.show();
 
         let optionsBoxes = {
-            "facebook": this._ui.get_object("box-options-facebook"),
-            "foursquare": this._ui.get_object("box-options-foursquare")
+            'facebook': this._ui.get_object('box-options-facebook'),
+            'foursquare': this._ui.get_object('box-options-foursquare')
         };
 
         for (let provider in optionsBoxes) {
@@ -578,15 +578,15 @@ const CheckInDialog = new Lang.Class({
     },
 
     startCheckInStep: function() {
-        this.set_title("Loading");
-        this._stack.set_visible_child_name("loading");
-        
+        this.set_title('Loading');
+        this._stack.set_visible_child_name('loading');
+
         this._doneButton.sensitive = false;
 
         let message = this._messageTextView.buffer.text;
-        let privacy = this._ui.get_object("combobox-privacy-" + this._account.get_account().provider_type).active_id;
-        let broadcastFacebook = this._ui.get_object("checkbutton-broadcast-facebook").active;
-        let broadcastTwitter = this._ui.get_object("checkbutton-broadcast-twitter").active;
+        let privacy = this._ui.get_object('combobox-privacy-' + this._account.get_account().provider_type).active_id;
+        let broadcastFacebook = this._ui.get_object('checkbutton-broadcast-facebook').active;
+        let broadcastTwitter = this._ui.get_object('checkbutton-broadcast-twitter').active;
 
         this._checkIn.message = message;
         this._checkIn.privacy = privacy;
@@ -598,7 +598,7 @@ const CheckInDialog = new Lang.Class({
             this._checkIn,
             (function (authorizer, data, error) {
                 if (error == null) {
-                    this.emit("response", CheckInDialogResponse.SUCCESS);
+                    this.emit('response', CheckInDialogResponse.SUCCESS);
                 } else {
                     let messageDialog = new Gtk.MessageDialog({
                         transient_for: this,
@@ -606,7 +606,7 @@ const CheckInDialog = new Lang.Class({
                         message_type: Gtk.MessageType.ERROR,
                         buttons: Gtk.ButtonsType.OK,
                         modal: true,
-                        text: _("An error has ocurred during the check-in"),
+                        text: _('An error has ocurred during the check-in'),
                         secondary_text: error.message
                     });
                     messageDialog.run();
@@ -622,7 +622,7 @@ const CheckInDialog = new Lang.Class({
 });
 
 if (ARGV.length != 3) {
-    printerr("Usage: gjs dialog.js <placeName> <placeLatitude> <placeLongitude>");
+    printerr('Usage: gjs dialog.js <placeName> <placeLatitude> <placeLongitude>');
     System.exit(1);
 }
 
@@ -641,5 +641,5 @@ Gtk.init(null, 0);
 let dialog = new CheckInDialog({
     place: place
 });
-print("Response: " + dialog.run());
+print('Response: ' + dialog.run());
 dialog.destroy();

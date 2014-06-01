@@ -3,7 +3,7 @@ const Geocode = imports.gi.GeocodeGlib;
 const Lang = imports.lang;
 
 const SocialPlace = new Lang.Class({
-    Name: "SocialServiceSocialPlace",
+    Name: 'SocialServiceSocialPlace',
 
     _init: function(params) {
         this.id = params.id;

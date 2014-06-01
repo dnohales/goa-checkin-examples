@@ -54,16 +54,16 @@ const CheckInManager = new Lang.Class({
             let accountId = object.get_account().id;
             this._accounts.push(object);
 
-            if (object.get_account().provider_type == "facebook") {
+            if (object.get_account().provider_type == 'facebook') {
                 this._authorizers[accountId] = new GFBGraph.GoaAuthorizer({ goa_object: object });
-            } else if (object.get_account().provider_type == "foursquare") {
+            } else if (object.get_account().provider_type == 'foursquare') {
                 this._authorizers[accountId] = new FoursquareGoaAuthorizer({ goa_object: object });
             } else {
                 //not reached
             }
         }));
 
-        this.emit("accounts-refreshed");
+        this.emit('accounts-refreshed');
     },
 
     getClient: function() {
@@ -107,7 +107,7 @@ const CheckInManager = new Lang.Class({
 Signals.addSignalMethods(CheckInManager.prototype);
 
 const CheckIn = new Lang.Class({
-    Name: "CheckIn",
+    Name: 'CheckIn',
 
     message: null,
 
